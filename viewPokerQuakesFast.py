@@ -1,32 +1,35 @@
 #############################
 ## Written by Benjamen Gao
 ## For Math 101 Winter 2022
-## Last Edit: B^2 1/31/2022
-## Notes: In Progress
+## Last Edit: B^2 2/4/2022
+## Notes: Donne
 #############################
 
 import time
 from graphics import Canvas
 
-SHIFT = 120
-X_BOUND = 220
-Y_BOUND = 220
-STACK_SIZE = 100000
+SHIFT = 40
+X_BOUND = 40 #450
+Y_BOUND = 40 #50
+STACK_SIZE = 729 #314159
 
 
 def main():
+    t0 = time.time()
     # run one trial, see result
     board = run_trial(STACK_SIZE)
     canvas = create_canvas()
     draw_grid_canvas(board, canvas)
-    time.sleep(100)
+    t1 = time.time()
+    print(t1 - t0)
+    canvas.mainloop()
 
 
 def create_canvas():
-    return Canvas(X_BOUND * 50, Y_BOUND * 50, f'Steady State Configuration Starting Stack Size of {STACK_SIZE} Chips')
+    return Canvas(X_BOUND * 40, Y_BOUND * 40, f'Steady State Configuration Starting Stack Size of {STACK_SIZE} Chips')
 
 
-def draw_grid_canvas(grid, canvas, scale=3):
+def draw_grid_canvas(grid, canvas, scale=10):
     """
     Draw grid to tk canvas, erasing and then filling it.
     This was ultimately the best performing approach.
@@ -47,14 +50,12 @@ def draw_grid_canvas(grid, canvas, scale=3):
                 color = 'orange'
             else:
                 color = 'red'
-            rx = 1 + x * scale
-            ry = 1 + y * scale
-            canvas.create_rectangle(rx + SHIFT, ry + SHIFT, rx + scale + SHIFT, ry + scale + SHIFT, fill=color, outline=color)
-
+            canvas.create_rectangle((1 + x * scale) + SHIFT, (1 + y * scale) + SHIFT, (1 + x * scale) + scale + SHIFT,
+                                    (1 + y * scale) + scale + SHIFT, fill=color, outline=color)
     canvas.update()
 
 
-def run_trial(chip_stack_size=120):
+def run_trial(chip_stack_size):
     # make board and set starting point
     board = [[0 for _ in range(X_BOUND)] for _ in range(Y_BOUND)]
     board[X_BOUND // 2][Y_BOUND // 2] = chip_stack_size
@@ -64,7 +65,7 @@ def run_trial(chip_stack_size=120):
     geq_four_chips.add((X_BOUND // 2, Y_BOUND // 2))
 
     # BFS flood fill algorithm
-    while len(geq_four_chips) > 0:
+    while geq_four_chips:
         try:
             location = geq_four_chips.pop()
             x_coord = location[0]
@@ -78,24 +79,20 @@ def run_trial(chip_stack_size=120):
 
                 # spread 1 chip to each neighbor
                 right = x_coord + 1
-                if 0 <= right < X_BOUND:
-                    board[y_coord][right] += 1
-                    geq_four_chips.add((right, y_coord))
+                board[y_coord][right] += 1
+                geq_four_chips.add((right, y_coord))
 
                 left = x_coord - 1
-                if 0 <= left < X_BOUND:
-                    board[y_coord][left] += 1
-                    geq_four_chips.add((left, y_coord))
+                board[y_coord][left] += 1
+                geq_four_chips.add((left, y_coord))
 
                 up = y_coord + 1
-                if 0 <= up < Y_BOUND:
-                    board[up][x_coord] += 1
-                    geq_four_chips.add((x_coord, up))
+                board[up][x_coord] += 1
+                geq_four_chips.add((x_coord, up))
 
                 down = y_coord - 1
-                if 0 <= down < Y_BOUND:
-                    board[down][x_coord] += 1
-                    geq_four_chips.add((x_coord, down))
+                board[down][x_coord] += 1
+                geq_four_chips.add((x_coord, down))
 
         except KeyError:
             break
