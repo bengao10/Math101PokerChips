@@ -8,9 +8,9 @@
 import time
 import turtle
 
-X_BOUND = 27
-Y_BOUND = 27
-STACK_SIZE = 1000
+X_BOUND = 95
+Y_BOUND = 95
+STACK_SIZE = 12345
 
 
 def main():
@@ -25,7 +25,7 @@ def show_results(board):
     pen.speed(0)
     for i in range(X_BOUND):
         pen.up()
-        pen.setpos(-475, -400 + 30 * i)
+        pen.setpos(-475, -400 + 5 * i)
         pen.down()
         for j in range(Y_BOUND):
             if board[j][i] == 0:
@@ -39,9 +39,9 @@ def show_results(board):
             pen.fillcolor(col)
             pen.begin_fill()
             for _ in range(4):
-                pen.forward(30)
+                pen.forward(5)
                 pen.left(90)
-            pen.forward(30)
+            pen.forward(5)
             pen.end_fill()
     turtle.exitonclick()
 
